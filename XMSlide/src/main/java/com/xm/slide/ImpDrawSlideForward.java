@@ -98,7 +98,7 @@ public class ImpDrawSlideForward implements IDrawSlide {
         float centerY = height / 2;
 
         float progress = currentWidth / maxWidth;
-        Log.v("::::", "progress" + progress + "currentWidth" + currentWidth);
+        //Log.v("::::", "progress" + progress + "currentWidth" + currentWidth);
         if (progress == 0) {
             return;
         }

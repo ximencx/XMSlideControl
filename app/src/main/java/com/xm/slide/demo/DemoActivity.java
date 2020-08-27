@@ -18,6 +18,7 @@ package com.xm.slide.demo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,25 +28,30 @@ import com.xm.slide.SlideManager;
 
 public class DemoActivity extends AppCompatActivity {
     private SlideManager slideManager;
+    private TextView btn1;
+    private TextView btn2;
+    private TextView btn3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo);
 
-        findViewById(R.id.btn_new_activity).setOnClickListener(v -> {
-            if (slideManager == null) {
-                return;
-            }
-            if (slideManager.isEnableSlide()) {
-                slideManager.setEnableSlide(false);
-                ((TextView) findViewById(R.id.btn_new_activity)).setText("slide enable false");
-            } else {
-                slideManager.setEnableSlide(true);
-                ((TextView) findViewById(R.id.btn_new_activity)).setText("slide enable true");
-            }
+        btn1 = findViewById(R.id.btn1);
+        btn2 = findViewById(R.id.btn2);
+        btn3 = findViewById(R.id.btn3);
+
+        btn1.setOnClickListener(v -> {
+            onsetText();
+        });
+
+        btn2.setOnClickListener(v -> {
+            onsetText();
+        });
 
 
+        btn3.setOnClickListener(v -> {
+            onsetText();
         });
 
         //开启滑动关闭
@@ -65,6 +71,28 @@ public class DemoActivity extends AppCompatActivity {
                     }
                 }).useSlideBack().useSlideForward();
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return slideManager.onTouchEvent(event) || super.onTouchEvent(event);
+    }
+
+    private void onsetText() {
+        if (slideManager == null) {
+            return;
+        }
+        if (slideManager.isEnableSlide()) {
+            slideManager.setEnableSlide(false);
+            btn1.setText("slide enable false");
+            btn2.setText("slide enable false");
+            btn3.setText("slide enable false");
+        } else {
+            slideManager.setEnableSlide(true);
+            btn1.setText("slide enable true");
+            btn2.setText("slide enable true");
+            btn3.setText("slide enable true");
+        }
     }
 
     @Override

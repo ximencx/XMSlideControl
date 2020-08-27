@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
 
@@ -41,7 +42,7 @@ class SlideProxyView extends View {
 
     public SlideProxyView setSlideView(@NonNull IDrawSlide slideView) {
         this.slideView = slideView;
-        setLayoutParams(new SlideControlBackLayout.LayoutParams(slideView.getViewWidth(), slideView.getViewHeight()));
+        setLayoutParams(new ViewGroup.LayoutParams(slideView.getViewWidth(), slideView.getViewHeight()));
         return this;
     }
 

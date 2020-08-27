@@ -18,14 +18,15 @@ package com.xm.slide;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.view.MotionEvent;
 
 
 public class SlideManager {
+    private SlideControlBackLayout slideControlBackLayout;
     private OnSlideListener onSlideListener;
     private int canSlideWidth;
     private Activity activity;
     private SlideControlForwardLayout slideControlForwardLayout;
-    private SlideControlBackLayout slideControlBackLayout;
     private boolean isEnableSlide = true;
 
     public static SlideManager create(@NonNull Activity activity) {
@@ -60,6 +61,18 @@ public class SlideManager {
         ImpDrawSlideForward slideView = new ImpDrawSlideForward(activity);
         slideControlForwardLayout = new SlideControlForwardLayout(activity, canSlideWidth, slideView, onSlideListener).create();
         return this;
+    }
+
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+        boolean tmp1 = false;
+        boolean tmp2 = false;
+        if (slideControlBackLayout != null) {
+            tmp1 = slideControlBackLayout.onTouchEvent(motionEvent);
+        }
+        if (slideControlForwardLayout != null) {
+            tmp2 = slideControlForwardLayout.onTouchEvent(motionEvent);
+        }
+        return tmp1 || tmp2;
     }
 
     public boolean isEnableSlide() {

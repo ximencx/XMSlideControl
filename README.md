@@ -14,13 +14,13 @@
 allprojects {
     repositories {
         ...
-        maven { url 'https://github.io' }
+        maven { url "https://jitpack.io" }
     }
 }
 
 //引入库 注意last-version替换为最新版本号
 dependencies {
-    implementation 'com.xm.slide:XMSlide:last-version'
+        api 'com.github.ximencx:XMSlideControl:1.1'
 }
 	
 ```
@@ -51,6 +51,11 @@ protected void onCreate(Bundle savedInstanceState) {
                            overridePendingTransition(R.anim.fade_right_in, R.anim.fade_left_out);
                        }
                    }).useSlideBack().useSlideForward();
+                   //监听滑动事件
+                     @Override
+                       public boolean onTouchEvent(MotionEvent event) {
+                           return slideManager.onTouchEvent(event) || super.onTouchEvent(event);
+                       }
 }
 ```
 
