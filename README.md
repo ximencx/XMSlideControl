@@ -20,7 +20,7 @@ allprojects {
 
 //引入库 注意last-version替换为最新版本号
 dependencies {
-        api 'com.github.ximencx:XMSlideControl:1.1'
+        api 'com.github.ximencx:XMSlideControl:1.2'
 }
 	
 ```

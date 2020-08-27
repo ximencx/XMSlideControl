@@ -19,7 +19,6 @@ package com.xm.slide;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
@@ -32,7 +31,10 @@ public class SlideControlBackLayout {
 
     private float downX;
     private float moveX;
+    private float downY;
+    private float moveY;
     private boolean startDrag = false;
+    private boolean isResult = false;
 
     private Context context;
 
@@ -97,29 +99,34 @@ public class SlideControlBackLayout {
         }
 
         float currentX = motionEvent.getRawX();
+        float currentY = motionEvent.getRawY();
 
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                float currentY = motionEvent.getRawY();
+
                 if (currentY > Utils.d2p(context, 100) && currentX <= canSlideWidth) {
                     downX = currentX;
+                    downY = currentY;
                     startDrag = true;
-                    slideProxyView.updateRate(0, false);
-                    setSlideViewY(slideProxyView, (int) (motionEvent.getRawY()));
                 } else {
+                    startDrag = false;
                     return false;
                 }
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if (startDrag) {
-                    moveX = currentX - downX;
+                moveX = currentX - downX;
+                moveY = currentY - downY;
+                if (startDrag && Math.abs(moveX) > Math.abs(moveY)) {
                     if (moveX > 0 && Math.abs(moveX) <= slideProxyView.getSlideView().getShowViewWidth() * 2) {
                         slideProxyView.updateRate(Math.abs(moveX) / 2, false);
                     } else if (moveX > 0) {
                         slideProxyView.updateRate(slideProxyView.getSlideView().getShowViewWidth(), false);
                     }
-                    setSlideViewY(slideProxyView, (int) (motionEvent.getRawY()));
+                    setSlideViewY(slideProxyView, (int) (currentY));
+                    isResult = true;
+                } else {
+                    isResult = false;
                 }
                 break;
 
@@ -129,15 +136,20 @@ public class SlideControlBackLayout {
                 if (startDrag && moveX > 0 && Math.abs(moveX) >= slideProxyView.getSlideView().getShowViewWidth() * 2) {
                     onBack();
                     slideProxyView.updateRate(0, false);
-                } else if (moveX > 0) {
+                    isResult = true;
+                } else if (startDrag && moveX > 0) {
                     slideProxyView.updateRate(0, startDrag);
+                    isResult = true;
+                } else {
+                    isResult = false;
                 }
                 moveX = 0;
+                moveY = 0;
                 startDrag = false;
                 break;
         }
         //Log.v("::::", "MotionEvent" + motionEvent.getAction() + "startDrag:" + startDrag + "movex" + moveX);
-        return startDrag;
+        return isResult;
     }
     //endregion
 

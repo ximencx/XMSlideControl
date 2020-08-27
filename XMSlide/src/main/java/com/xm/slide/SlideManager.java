@@ -41,7 +41,7 @@ public class SlideManager {
     }
 
     public SlideManager useDefaultSlideWidth() {
-        this.canSlideWidth = Utils.getScreenWidth(activity) / 3;
+        this.canSlideWidth = Utils.getScreenWidth(activity) / 6;
         return this;
     }
 

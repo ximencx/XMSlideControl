@@ -19,6 +19,8 @@ package com.xm.slide.demo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +33,7 @@ public class DemoActivity extends AppCompatActivity {
     private TextView btn1;
     private TextView btn2;
     private TextView btn3;
+    private ScrollView scroll_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,7 @@ public class DemoActivity extends AppCompatActivity {
         btn1 = findViewById(R.id.btn1);
         btn2 = findViewById(R.id.btn2);
         btn3 = findViewById(R.id.btn3);
+        scroll_view=findViewById(R.id.scroll_view);
 
         btn1.setOnClickListener(v -> {
             onsetText();
@@ -55,7 +59,8 @@ public class DemoActivity extends AppCompatActivity {
         });
 
         //开启滑动关闭
-        slideManager = SlideManager.create(this).useDefaultSlideWidth()
+        slideManager = SlideManager.create(this)
+                .useDefaultSlideWidth()
                 .onSlide(new OnSlideListener() {
                     @Override
                     public void onSlideBack() {
@@ -70,13 +75,18 @@ public class DemoActivity extends AppCompatActivity {
                         //overridePendingTransition(R.anim.fade_right_in, R.anim.fade_left_out);
                     }
                 }).useSlideBack().useSlideForward();
-
+        scroll_view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return slideManager.onTouchEvent(event);
+            }
+        });
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return slideManager.onTouchEvent(event) || super.onTouchEvent(event);
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        return slideManager.onTouchEvent(event) || super.onTouchEvent(event);
+//    }
 
     private void onsetText() {
         if (slideManager == null) {
