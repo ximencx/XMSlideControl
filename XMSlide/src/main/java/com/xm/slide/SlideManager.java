@@ -26,6 +26,7 @@ public class SlideManager {
     private Activity activity;
     private SlideControlForwardLayout slideControlForwardLayout;
     private SlideControlBackLayout slideControlBackLayout;
+    private boolean isEnableSlide = true;
 
     public static SlideManager create(@NonNull Activity activity) {
         SlideManager slideManager = new SlideManager();
@@ -33,9 +34,13 @@ public class SlideManager {
         return slideManager;
     }
 
+    public SlideManager setCanSlideWidth(int canSlideWidth) {
+        this.canSlideWidth = canSlideWidth;
+        return this;
+    }
 
     public SlideManager useDefaultSlideWidth() {
-        canSlideWidth = Utils.d2p(activity, 50);
+        this.canSlideWidth = Utils.getScreenWidth(activity) / 3;
         return this;
     }
 
@@ -46,14 +51,40 @@ public class SlideManager {
 
     public SlideManager useSlideBack() {
         ImpDrawSlideBack slideView = new ImpDrawSlideBack(activity);
-        slideControlBackLayout = new SlideControlBackLayout(activity, canSlideWidth, slideView, onSlideListener).attachToActivity(activity);
+        slideControlBackLayout = new SlideControlBackLayout(activity, canSlideWidth, slideView, onSlideListener).create();
         return this;
 
     }
 
     public SlideManager useSlideForward() {
         ImpDrawSlideForward slideView = new ImpDrawSlideForward(activity);
-        slideControlForwardLayout = new SlideControlForwardLayout(activity, canSlideWidth, slideView, onSlideListener).attachToActivity(activity);
+        slideControlForwardLayout = new SlideControlForwardLayout(activity, canSlideWidth, slideView, onSlideListener).create();
         return this;
+    }
+
+    public boolean isEnableSlide() {
+        return isEnableSlide;
+    }
+
+    public void setEnableSlide(boolean isEnable) {
+        isEnableSlide = isEnable;
+        if (slideControlBackLayout != null) {
+            slideControlBackLayout.setEnable(isEnable);
+        }
+        if (slideControlForwardLayout != null) {
+            slideControlForwardLayout.setEnable(isEnable);
+        }
+    }
+
+    public void onDestroy() {
+        if (slideControlBackLayout != null) {
+            slideControlBackLayout.onDestroy();
+        }
+        if (slideControlForwardLayout != null) {
+            slideControlForwardLayout.onDestroy();
+        }
+        if (onSlideListener != null) {
+            onSlideListener = null;
+        }
     }
 }

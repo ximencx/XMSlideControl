@@ -36,7 +36,7 @@ public class SlideControlForwardLayout extends FrameLayout {
 
     private Context context;
 
-    SlideControlForwardLayout(@NonNull Context context, int canSlideWidth, IDrawSlide slideView, OnSlideListener onSlideListener) {
+    public SlideControlForwardLayout(@NonNull Context context, int canSlideWidth, IDrawSlide slideView, OnSlideListener onSlideListener) {
         super(context);
         this.context = context;
         this.canSlideWidth = canSlideWidth;
@@ -46,15 +46,24 @@ public class SlideControlForwardLayout extends FrameLayout {
     }
 
 
-    SlideControlForwardLayout attachToActivity(@NonNull Activity activity) {
+    public SlideControlForwardLayout create() {
         ViewParent parent = getParent();
         if (parent instanceof ViewGroup) {
             ((ViewGroup) parent).removeView(this);
         }
-        ViewGroup decor = (ViewGroup) activity.getWindow().getDecorView();
+        ViewGroup decor = (ViewGroup) ((Activity) context).getWindow().getDecorView();
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         decor.addView(this, params);
         return this;
+    }
+
+    public void onDestroy() {
+        ViewGroup decor = (ViewGroup) ((Activity) context).getWindow().getDecorView();
+        decor.removeView(this);
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     private void onForward() {

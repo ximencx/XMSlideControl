@@ -16,9 +16,9 @@
 
 package com.xm.slide.demo;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xm.slide.OnSlideListener;
@@ -26,6 +26,7 @@ import com.xm.slide.SlideManager;
 
 
 public class DemoActivity extends AppCompatActivity {
+    private SlideManager slideManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,25 +34,34 @@ public class DemoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_demo);
 
         findViewById(R.id.btn_new_activity).setOnClickListener(v -> {
-            startActivity(new Intent(this, DemoActivity.class));
-            overridePendingTransition(R.anim.fade_right_in, R.anim.fade_left_out);
+            if (slideManager == null) {
+                return;
+            }
+            if (slideManager.isEnableSlide()) {
+                slideManager.setEnableSlide(false);
+                ((TextView) findViewById(R.id.btn_new_activity)).setText("slide enable false");
+            } else {
+                slideManager.setEnableSlide(true);
+                ((TextView) findViewById(R.id.btn_new_activity)).setText("slide enable true");
+            }
+
 
         });
 
         //开启滑动关闭
-        SlideManager.create(this).useDefaultSlideWidth()
+        slideManager = SlideManager.create(this).useDefaultSlideWidth()
                 .onSlide(new OnSlideListener() {
                     @Override
                     public void onSlideBack() {
                         Toast.makeText(DemoActivity.this, "onSlideBack", Toast.LENGTH_SHORT).show();
-                        onBackPressed();
+                        //onBackPressed();
                     }
 
                     @Override
                     public void onSlideForward() {
                         Toast.makeText(DemoActivity.this, "onSlideForward", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(DemoActivity.this, DemoActivity.class));
-                        overridePendingTransition(R.anim.fade_right_in, R.anim.fade_left_out);
+                        //startActivity(new Intent(DemoActivity.this, DemoActivity.class));
+                        //overridePendingTransition(R.anim.fade_right_in, R.anim.fade_left_out);
                     }
                 }).useSlideBack().useSlideForward();
 
@@ -61,5 +71,13 @@ public class DemoActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.fade_left_in, R.anim.fade_right_out);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (slideManager != null) {
+            slideManager.onDestroy();
+        }
     }
 }

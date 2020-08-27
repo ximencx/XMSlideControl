@@ -35,8 +35,11 @@ public class SlideControlBackLayout extends FrameLayout {
     private float moveX;
     private boolean startDrag = false;
 
-    SlideControlBackLayout(@NonNull Context context, int canSlideWidth, IDrawSlide slideView, OnSlideListener onSlideListener) {
+    private Context context;
+
+    public SlideControlBackLayout(@NonNull Context context, int canSlideWidth, IDrawSlide slideView, OnSlideListener onSlideListener) {
         super(context);
+        this.context = context;
         this.canSlideWidth = canSlideWidth;
         this.onSlideListener = onSlideListener;
         slideProxyView = new SlideProxyView(context, slideView);
@@ -44,15 +47,24 @@ public class SlideControlBackLayout extends FrameLayout {
     }
 
 
-    SlideControlBackLayout attachToActivity(@NonNull Activity activity) {
+    public SlideControlBackLayout create() {
         ViewParent parent = getParent();
         if (parent instanceof ViewGroup) {
             ((ViewGroup) parent).removeView(this);
         }
-        ViewGroup decor = (ViewGroup) activity.getWindow().getDecorView();
-
-        decor.addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        ViewGroup decor = (ViewGroup) ((Activity) context).getWindow().getDecorView();
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        decor.addView(this, params);
         return this;
+    }
+
+    public void onDestroy() {
+        ViewGroup decor = (ViewGroup) ((Activity) context).getWindow().getDecorView();
+        decor.removeView(this);
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     private void onBack() {
@@ -60,7 +72,6 @@ public class SlideControlBackLayout extends FrameLayout {
             onSlideListener.onSlideBack();
         }
     }
-
 
     private void setSlideViewY(SlideProxyView view, int y) {
         if (!view.getSlideView().scrollVertical()) {
